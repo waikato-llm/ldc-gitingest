@@ -1,5 +1,5 @@
 # ldc-gitingest
-llm-dataset-converter plugin that integrates the [gitingest](https://github.com/cyclotruc/gitingest) library.
+llm-dataset-converter extension that integrates the [gitingest](https://github.com/cyclotruc/gitingest) library.
 
 
 ## Installation

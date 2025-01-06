@@ -14,7 +14,7 @@ def _read(f):
 
 setup(
     name="ldc_gitingest",
-    description="Python3 library that makes the gitingest library available.",
+    description="Python3 library that makes the gitingest library available to llm-dataset-converter.",
     long_description=(
             _read('DESCRIPTION.rst') + b'\n' +
             _read('CHANGES.rst')).decode('utf-8'),
