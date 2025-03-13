@@ -22,11 +22,12 @@ options:
                         The custom name to use for the logger, uses the plugin
                         name by default (default: None)
   -i [INPUT ...], --input [INPUT ...]
-                        Path or URL to the git repository to read (default:
-                        None)
+                        Path or URL to the git repository to read; Supported
+                        placeholders: {HOME}, {CWD}, {TMP} (default: None)
   -I [INPUT_LIST ...], --input_list [INPUT_LIST ...]
                         Path to the text file(s) listing the git repository
-                        dirs and/or remote URLs to use (default: None)
+                        dirs and/or remote URLs to use; Supported
+                        placeholders: {HOME}, {CWD}, {TMP} (default: None)
   -p [INCLUDE_PATTERN ...], --include_pattern [INCLUDE_PATTERN ...]
                         The filename pattern for including files (default: all
                         included), see:

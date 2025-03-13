@@ -8,9 +8,10 @@ from gitingest import ingest
 from wai.logging import LOGGING_WARNING
 from ldc.core import domain_suffix
 from ldc.api.pretrain import PretrainData, PretrainReader
+from seppl.placeholders import PlaceholderSupporter, placeholder_list, expand_placeholders
 
 
-class GitIngestPretrainReader(PretrainReader):
+class GitIngestPretrainReader(PretrainReader, PlaceholderSupporter):
     """
     Turns git repositories (local dirs or remote URLs) into text to use for pretraining.
     """
@@ -65,8 +66,8 @@ class GitIngestPretrainReader(PretrainReader):
         :rtype: argparse.ArgumentParser
         """
         parser = super()._create_argparser()
-        parser.add_argument("-i", "--input", type=str, help="Path or URL to the git repository to read", required=False, nargs="*")
-        parser.add_argument("-I", "--input_list", type=str, help="Path to the text file(s) listing the git repository dirs and/or remote URLs to use", required=False, nargs="*")
+        parser.add_argument("-i", "--input", type=str, help="Path or URL to the git repository to read; " + placeholder_list(obj=self), required=False, nargs="*")
+        parser.add_argument("-I", "--input_list", type=str, help="Path to the text file(s) listing the git repository dirs and/or remote URLs to use; " + placeholder_list(obj=self), required=False, nargs="*")
         parser.add_argument("-p", "--include_pattern", type=str, help="The filename pattern for including files (default: all included), see: https://docs.python.org/3/library/fnmatch.html", required=False, nargs="*")
         parser.add_argument("-e", "--exclude_pattern", type=str, help="The filename pattern for excluding files (default: none excluded), see: https://docs.python.org/3/library/fnmatch.html", required=False, nargs="*")
         return parser
@@ -110,12 +111,17 @@ class GitIngestPretrainReader(PretrainReader):
         self._inputs = []
         if self.source is not None:
             for d in self.source:
+                d = expand_placeholders(d.strip())
                 if self._accept_input(d):
                     self._inputs.append(d)
         if self.source_list is not None:
             for d in self.source_list:
-                if self._accept_input(d):
-                    self._inputs.append(d)
+                with open(d, "r") as fp:
+                    lines = fp.readlines()
+                for line in lines:
+                    line = expand_placeholders(line.strip())
+                    if self._accept_input(line):
+                        self._inputs.append(line)
 
     def read(self) -> Iterable[PretrainData]:
         """
